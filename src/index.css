@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body { background-color: #0A0E1A; color: #F9FAFB; font-family: 'Inter', sans-serif; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #111827; }
+::-webkit-scrollbar-thumb { background: #374151; border-radius: 2px; }
+.gold-gradient { background: linear-gradient(135deg, #C8A84B 0%, #F0D070 50%, #C8A84B 100%); }
+.card-hover { transition: all 0.2s ease; }
+.card-hover:hover { border-color: #C8A84B; box-shadow: 0 0 0 1px #C8A84B22; }
