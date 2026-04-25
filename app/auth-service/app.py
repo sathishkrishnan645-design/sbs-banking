@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import os, redis, jwt, bcrypt, psycopg2
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
+CORS(app)
 
 JWT_SECRET  = os.getenv("JWT_SECRET", "sbs-secret-key")
 REDIS_HOST  = os.getenv("REDIS_HOST", "localhost")
@@ -15,7 +17,10 @@ def get_redis():
     return redis.Redis(host=REDIS_HOST, port=6379, decode_responses=True)
 
 def get_db():
-    return psycopg2.connect(host=DB_HOST, dbname=DB_NAME, user=DB_USER, password=DB_PASSWORD)
+    return psycopg2.connect(
+        host=DB_HOST, dbname=DB_NAME,
+        user=DB_USER, password=DB_PASSWORD
+    )
 
 @app.route("/health")
 def health():
@@ -29,7 +34,10 @@ def login():
     try:
         conn = get_db()
         cur  = conn.cursor()
-        cur.execute("SELECT id, password_hash, full_name FROM users WHERE customer_id=%s AND status='ACTIVE'", (customer_id,))
+        cur.execute(
+            "SELECT id, password_hash, full_name FROM users WHERE customer_id=%s AND status='ACTIVE'",
+            (customer_id,)
+        )
         user = cur.fetchone()
         cur.close(); conn.close()
     except Exception as e:

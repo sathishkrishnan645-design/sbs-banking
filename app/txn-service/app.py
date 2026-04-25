@@ -1,8 +1,9 @@
-@"
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import os, psycopg2
 
 app = Flask(__name__)
+CORS(app)
 
 DB_HOST     = os.getenv('DB_HOST', 'localhost')
 DB_NAME     = os.getenv('DB_NAME', 'sbsdb')
@@ -42,7 +43,8 @@ def transfer():
         cur.execute('UPDATE accounts SET balance = balance - %s WHERE account_number=%s AND balance >= %s',
                     (amount, from_acct, amount))
         if cur.rowcount == 0:
-            conn.rollback(); return {'error': 'Insufficient balance'}, 400
+            conn.rollback()
+            return {'error': 'Insufficient balance'}, 400
         cur.execute('UPDATE accounts SET balance = balance + %s WHERE account_number=%s', (amount, to_acct))
         cur.execute('INSERT INTO transactions (account_number, type, amount, description) VALUES (%s,%s,%s,%s)',
                     (from_acct, 'DEBIT', amount, f'{mode} to {to_acct}'))
@@ -55,4 +57,3 @@ def transfer():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8083, debug=False)
-"@ | Out-File -FilePath app\txn-service\app.py -Encoding utf8

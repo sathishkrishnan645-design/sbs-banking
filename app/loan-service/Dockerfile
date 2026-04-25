@@ -15,7 +15,7 @@ COPY --from=builder /install /usr/local
 COPY app.py .
 RUN chown -R sbs:sbs /app
 USER sbs
-EXPOSE 8081
+EXPOSE 8084
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8081/health')"
-CMD ["gunicorn","--bind","0.0.0.0:8081","--workers","2","--timeout","60","app:app"]
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8084/health')"
+CMD ["gunicorn","--bind","0.0.0.0:8084","--workers","2","--timeout","60","app:app"]

@@ -1,8 +1,9 @@
-@"
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import os, psycopg2
 
 app = Flask(__name__)
+CORS(app)
 
 DB_HOST     = os.getenv('DB_HOST', 'localhost')
 DB_NAME     = os.getenv('DB_NAME', 'sbsdb')
@@ -48,4 +49,3 @@ def apply_loan():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8084, debug=False)
-"@ | Out-File -FilePath app\loan-service\app.py -Encoding utf8

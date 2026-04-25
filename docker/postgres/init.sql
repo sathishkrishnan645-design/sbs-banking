@@ -1,4 +1,3 @@
-@"
 CREATE TABLE IF NOT EXISTS users (
     id            SERIAL PRIMARY KEY,
     customer_id   VARCHAR(20) UNIQUE NOT NULL,
@@ -49,7 +48,6 @@ VALUES ('ACC001001', 'CUS001', 'SAVINGS', 85420.50),
 ON CONFLICT DO NOTHING;
 
 INSERT INTO transactions (account_number, type, amount, description)
-VALUES ('ACC001001', 'CREDIT', 25000, 'Salary credit — April 2026'),
+VALUES ('ACC001001', 'CREDIT', 25000, 'Salary credit April 2026'),
        ('ACC001001', 'DEBIT',  4500,  'NEFT transfer to ACC002001'),
-       ('ACC001001', 'DEBIT',  1200,  'Bill payment — Electricity');
-"@ | Out-File -FilePath docker\postgres\init.sql -Encoding utf8
+       ('ACC001001', 'DEBIT',  1200,  'Bill payment Electricity');

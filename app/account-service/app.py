@@ -1,8 +1,9 @@
-@"
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import os, psycopg2
 
 app = Flask(__name__)
+CORS(app)
 
 DB_HOST     = os.getenv('DB_HOST', 'localhost')
 DB_NAME     = os.getenv('DB_NAME', 'sbsdb')
@@ -35,11 +36,11 @@ def get_account(account_number):
         cur.execute('SELECT account_number, account_type, balance FROM accounts WHERE account_number=%s', (account_number,))
         row = cur.fetchone()
         cur.close(); conn.close()
-        if not row: return {'error': 'Not found'}, 404
+        if not row:
+            return {'error': 'Not found'}, 404
         return {'accountNumber': row[0], 'type': row[1], 'balance': float(row[2])}
     except Exception as e:
         return {'error': str(e)}, 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8082, debug=False)
-"@ | Out-File -FilePath app\account-service\app.py -Encoding utf8
