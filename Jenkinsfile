@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        AWS_REGION   = 'ap-southeast-2'
-        ECR_REGISTRY = '953334886363.dkr.ecr.ap-southeast-2.amazonaws.com'
+        AWS_REGION   = 'ap-south-1'
+        ECR_REGISTRY = '953334886363.dkr.ecr.ap-south-1.amazonaws.com'
         IMAGE_TAG    = "${BUILD_NUMBER}"
         HOST_IP      = '172.31.8.218'
     }
