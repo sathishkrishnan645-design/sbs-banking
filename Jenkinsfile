@@ -5,6 +5,7 @@ pipeline {
         AWS_REGION   = 'ap-southeast-2'
         ECR_REGISTRY = '953334886363.dkr.ecr.ap-southeast-2.amazonaws.com'
         IMAGE_TAG    = "${BUILD_NUMBER}"
+        HOST_IP      = '172.31.8.218'
     }
 
     stages {
@@ -26,17 +27,25 @@ pipeline {
             }
         }
 
-        stage('Test Services') {
+        stage('Deploy Stack') {
             steps {
-                echo 'Testing health endpoints...'
+                echo 'Starting services...'
                 sh '''
                     cd docker
                     DOCKER_BUILDKIT=0 docker-compose up -d
-                    sleep 20
-                    curl -f http://localhost:8081/health || exit 1
-                    curl -f http://localhost:8082/health || exit 1
-                    curl -f http://localhost:8083/health || exit 1
-                    curl -f http://localhost:8084/health || exit 1
+                    sleep 25
+                '''
+            }
+        }
+
+        stage('Health Check') {
+            steps {
+                echo 'Running health checks...'
+                sh '''
+                    curl -f http://${HOST_IP}:8081/health || exit 1
+                    curl -f http://${HOST_IP}:8082/health || exit 1
+                    curl -f http://${HOST_IP}:8083/health || exit 1
+                    curl -f http://${HOST_IP}:8084/health || exit 1
                     echo "All health checks passed"
                 '''
             }
@@ -57,19 +66,6 @@ pipeline {
                         docker push $ECR_REGISTRY/sbs/$service:latest
                         echo "$service pushed to ECR"
                     done
-                '''
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                echo 'Deploying...'
-                sh '''
-                    cd docker
-                    DOCKER_BUILDKIT=0 docker-compose up -d
-                    sleep 10
-                    curl -f http://localhost:8081/health || exit 1
-                    echo "Deployment successful"
                 '''
             }
         }
